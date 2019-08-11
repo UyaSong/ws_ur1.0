@@ -1,0 +1,23 @@
+<launch>
+	
+  <!-- start the robot -->
+  <include file="$(find ur_modern_driver)/launch/ur5_bringup.launch">
+    <!--arg name="limited" value="true" /-->
+    <arg name="robot_ip" value="192.168.31.53" />
+    <arg name="use_lowbandwidth_trajectory_follower" value="true" />
+  </include>
+  
+  <include file="$(find ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch">
+    <!--arg name="limited" value="true" /-->
+  </include>
+
+  <include file="$(find ur5_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="config" value="true" />
+  </include>
+
+  < node pkg="tf" type="static_transform_publisher" name="ur5_broadcaster" args="0.571126329586 -0.370087393045 0.710542455038 -0.801020648064 -0.255076720545 0.144087873635 0.522054089806 base_link kinect2_ir_optical_frame 100" / >
+
+
+
+
+</launch>
