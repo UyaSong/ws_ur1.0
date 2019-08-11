@@ -100,7 +100,7 @@ if __name__ == '__main__':
             J_I_ee = np.linalg.pinv(J_ee)
             # ee obstacle repulsion force
             try:
-                (trans_ee_o, rot_ee_o) = listener.lookupTransform('/tf1', '/ee_link', rospy.Time(0))
+                (trans_ee_o, rot_ee_o) = listener.lookupTransform('/ar_marker_8', '/ee_link', rospy.Time(0))
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 continue
             vw_ee_o = calculateVelocity(trans_ee_o, 1)

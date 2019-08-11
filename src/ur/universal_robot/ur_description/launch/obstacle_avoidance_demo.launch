@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
 	
   <!-- start the robot -->
@@ -15,9 +16,9 @@
     <arg name="config" value="true" />
   </include>
 
-  <node pkg="tf" type="static_transform_publisher" name="ur5_broadcaster1" args="0.286813882321 -0.930552348217 0.712091303785 -0.772386104213 0.0127724549732 -0.0298963361557 0.634320722897 base_link kinect2_ir_optical_frame 100" />
+  <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster" args="0.958014396223 -1.3470054063 0.757374841712 -0.714719956463 -0.252652817309 0.223944830569 0.612528081479 base_link kinect2_rgb_optical_frame 100" />
 
-
+  <!--kinect2_ir_optical_frame/-->
 
 
 </launch>
