@@ -56,7 +56,7 @@ void BackgroundImageSubtract::callback(const sensor_msgs::Image::ConstPtr& msg){
       float pix_in = float(in_cv_image_->image.at<float>(cv::Point(i,j)));
       float pix_min = float(min_image_->image.at<float>(cv::Point(i,j)));
       if ((pix_min != 0) && (pix_in >= pix_min))
-	out_img.at<float>(cv::Point(i,j))=0.0;     
+        out_img.at<float>(cv::Point(i,j))=0.0;
     }
   }
   
