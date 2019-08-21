@@ -1,0 +1,67 @@
+<launch>
+  <arg name="kinect_name" default="kinect2"/>
+
+  <!-- backgroud store -->
+  <node name="$(arg kinect_name)_img_bg_store" pkg="kinects_human_tracking" type="kinect_img_bg_store" output="screen">
+    <param name="img_topic" value="$(arg kinect_name)/qhd/image_depth_rect" />
+    <param name="bg_frames" value="300" />
+  </node>
+
+  <!-- backgroud sub -->
+  <node name="$(arg kinect_name)_img_bg_sub" pkg="kinects_human_tracking" type="kinect_img_bg_sub" output="screen">
+    <param name="kinect_name" value="$(arg kinect_name)" />
+    <param name="topic_in" value="$(arg kinect_name)/qhd/image_depth_rect" />
+    <param name="topic_out" value="$(arg kinect_name)/doa_tracking/1.background_sub" />
+  </node>
+
+  <!-- Nodelet manager for this pipeline --> 
+  <node pkg="nodelet" type="nodelet" args="manager" name="$(arg kinect_name)_record_player_manager" output="screen" />
+
+  <!-- convert the filtered depth into a pointcloud -->
+  <node pkg="nodelet" type="nodelet" name="$(arg kinect_name)_depth_filtered_cloudify"
+    args="load depth_image_proc/point_cloud_xyzrgb $(arg kinect_name)_record_player_manager" output="screen">
+    <remap from="depth_registered/image_rect" to="$(arg kinect_name)/doa_tracking/1.background_sub"/>
+    <remap from="depth_registered/points" to="$(arg kinect_name)/doa_tracking/2.depth_registered/filtered_points"/>
+    <remap from="rgb/image_rect_color" to="$(arg kinect_name)/qhd/image_color_rect"/>
+    <remap from="rgb/camera_info" to="$(arg kinect_name)/qhd/camera_info"/>
+  </node>
+
+  <!-- clean NaNs and downsample the pointcloud -->
+  <node pkg="nodelet" type="nodelet" name="$(arg kinect_name)_voxel_grid" 
+	args="load pcl/VoxelGrid $(arg kinect_name)_record_player_manager" output="screen">
+	<remap from="~input" to="$(arg kinect_name)/doa_tracking/2.depth_registered/filtered_points" />
+	<remap from="~output" to="$(arg kinect_name)/doa_tracking/2.depth_registered/downsampled_filtered_points" />
+    <rosparam param="filter_field_name">z</rosparam>
+    <rosparam param="filter_limit_min">0.5</rosparam>
+    <rosparam param="filter_limit_max">4.0</rosparam>
+    <rosparam param="filter_limit_negative">False</rosparam>
+    <rosparam param="leaf_size">0.11</rosparam>
+  </node>
+
+  <!-- merge pc from different kinect -->
+  <node name="kinects_merge" pkg="kinects_human_tracking" type="merge_kinects_pc" output="screen">
+    <param name="topic_name1" value="$(arg kinect_name)/doa_tracking/2.depth_registered/downsampled_filtered_points" />
+    <!-- <param name="topic_name2" value="" /> -->
+    <param name="out_frame" value="base_link" />
+    <param name="out_topic_name" value="$(arg kinect_name)/3.kinect_merge" />
+  </node>
+
+  <!-- tracking closest pc cluster and point -->
+  <node name="closest_pt_tracking" pkg="kinects_human_tracking" type="closest_pt_tracking" output="screen">
+    <param name="kinect_topic_name" value="$(arg kinect_name)/3.kinect_merge" />
+    <param name="clusters_topic_name" value="$(arg kinect_name)/3.kinect_merge/clusters" />
+    <param name="out_topic_name" value="$(arg kinect_name)/3.kinect_merge/human_detection" />
+    <param name="downsampling" value="false" />
+    <param name="voxel_size" value="0.05" />
+    <param name="min_cluster_size" value="300" />
+    <param name="clustering_tolerance" value="0.06" /> <!-- 2*voxel_size -->
+    <param name="process_noise" value="0.05" />
+    <param name="kinect_noise" value="2.5" />
+    <param name="kinect_noise_z" value="5" />
+    <param name="minimum_height" value="0" />
+    <param name="max_tracking_jump" value="0.35" />
+    <param name="end_eff_frame" value="wrist_3_link" />
+    <rosparam param="clipping_rules">[z, GT, 0.04, y, GT, -4.0, x, GT, -0.5, x, LT, 1.5]</rosparam>
+  </node>
+
+</launch>
