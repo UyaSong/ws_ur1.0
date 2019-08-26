@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find ur_description)/urdf/ur5_robot.urdf.xacro'" />
+
+  <!-- If needed, broadcast static tf for robot root -->
+  <!-- We do not have a robot connected, so publish fake joint states -->
+  <!--node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="/use_gui" value="false"/>
+  </node-->
+
+  <!-- Given the published joint states, publish tf for the robot links -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+
+  <!-- dynamic obstacle frame interactive markers -->
+  <node name="itf" pkg="doa_ur" type="interactive_tf" ns="itf1">
+    <param name="parent_frame" value="base_link"/>
+    <param name="frame" value="tf1"/>
+  </node>
+  <!-- when these are chained together, the marker controls don't
+      appear unless I switch rviz to the tf1 frame, then move tf2,
+      then I can go back to the map frame and see tf2 markers -->
+  
+  <!--node name="itf" pkg="doa_ur" type="interactive_tf" ns="itf2">
+    <param name="parent_frame" value="tf1"/>
+    <param name="frame" value="tf2"/>
+  </node-->
+
+  <!-- static obstacle frame -->
+  <!-- node pkg="tf" type="static_transform_publisher" name="obstacle_broadcaster" args="0.533 0 0.7 0 0 0 1 base_link obstacle 100" /-->
+  <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster" args="0.913014396223 -1.2950054063 0.722374841712 -0.714719956463 -0.252652817309 0.223944830569 0.612528081479 base_link kinect2_rgb_optical_frame 100" />
+  <!-- Run Rviz and load the default config to see the state of the move_group node -->
+  <!-- node name="rviz" pkg="rviz" type="rviz"  /-->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find doa_ur)/config/interactive_tf.rviz"/>
+  <!-- node name="doa_sim" pkg="doa_ur" type="doa_sim.py"  /-->
+
+</launch>

@@ -1,6 +1,6 @@
 <launch>
   <arg name="kinect_name" default="kinect2"/>
-  <arg name="img_topic" default="$(arg kinect_name)/qhd/image_depth_rect"/>
+  <arg name="img_topic" default="$(arg kinect_name)/qhd/image_depth_rect_filtered"/>
   <arg name="bg_frames" default="300"/>
   
   <node name="$(arg kinect_name)_img_bg_store" pkg="kinects_human_tracking" type="kinect_img_bg_store" output="screen">
