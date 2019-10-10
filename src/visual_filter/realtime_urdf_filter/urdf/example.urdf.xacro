@@ -14,7 +14,7 @@
             </geometry>
         </collision>>
     </link>
-    <link name="wall2">
+    <!-- <link name="wall2">
         <visual>
             <geometry>
                 <box size="4 0.05 5" />
@@ -25,17 +25,18 @@
                 <box size="4 0.05 5" />
             </geometry>
         </collision>>
-    </link>
+    </link> -->
 
     <joint name="wall1_joint" type="fixed" >
-        <origin xyz="0 1.5 0" rpy="0 0 0.785398163"/>
+        <!-- <origin xyz="0 -0.5 0" rpy="0 0 0.785398163"/> -->
+        <origin xyz="0 -0.3 0" rpy="0 0 0"/>
         <parent link="base_link"/>
         <child link="wall1"/>
     </joint>
-    <joint name="wall2_joint" type="fixed" >
-        <origin xyz="0 1.5 0" rpy="0 0 -0.785398163"/>
+    <!-- <joint name="wall2_joint" type="fixed" >
+        <origin xyz="0 -1.5 0" rpy="0 0 -0.785398163"/>
         <parent link="base_link"/>
         <child link="wall2"/>
-    </joint>
+    </joint> -->
 
 </robot>

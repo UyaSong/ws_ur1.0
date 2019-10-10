@@ -1,4 +1,5 @@
 #include <kinects_human_tracking/closest_pt_tracking.hpp>
+// #include <tf/transform_broadcaster.h>
 /**
    Subscribe to a pointCloud and track the closest
    point to the robot's end-effector
@@ -97,6 +98,8 @@ int main(int argc, char** argv)
 
 void callback(const PCMsg::ConstPtr& kinect_pc_msg)
 {
+    // tf::TransformBroadcaster br_;
+    // tf::Transform transform;
 
     // Conversion from sensor_msgs::PointCloud2 to pcl::PointCloud
     pcl::fromROSMsg(*kinect_pc_msg, *kinects_pc_);
@@ -214,6 +217,10 @@ void callback(const PCMsg::ConstPtr& kinect_pc_msg)
 
         // Visualize pose and speed
         visualize_state(est, cluster_state_pub_);
+
+        // transform.setOrigin(tf::Vector3(est(0), est(1), est(2)));
+        // transform.setRotation(tf::Quaternion(0,0,0,1));
+        // br_.sendTransform(tf::StampedTransform(transform, ros::Time::now(),kinects_pc_->header.frame_id, "marker"));
 
         // Publish minimum distance and speed
         std_msgs::Float32 float32_msg;

@@ -5,6 +5,7 @@ import sys
 import rospy
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64MultiArray
+from geometry_msgs.msg import Vector3
 import numpy as np
 import tf
 import urx
@@ -37,17 +38,6 @@ class Joint(object):
         self.joint.velocity = joint_vel
         self.joint_pub.publish(self.joint)
 
-# def talker(joint_velocity):
-#     pub = rospy.Publisher('/joint_group_vel_controller/command', Float64MultiArray, queue_size=10)
-#     rate = rospy.Rate(125) # 125hz
-#     trajectory = Float64MultiArray()
-#     # qvel = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-#     while not rospy.is_shutdown():
-#         trajectory.data = joint_velocity        
-#         print trajectory
-#         pub.publish(trajectory)
-#         rate.sleep()
-
 def calculateVelocity(trans, force_type):
     # force type 0:attraction 1:repulsion
     trans_array = np.array(trans)
@@ -56,7 +46,7 @@ def calculateVelocity(trans, force_type):
     if force_type:
         if length <= 0.01:
             length = 0.01
-        if length < 0.3:
+        if length < 0.2:
             ee_v = trans_array/length
         else:
             ee_v = np.array([0, 0, 0])
@@ -71,6 +61,34 @@ def calculateVelocity(trans, force_type):
         vw_ee = np.append(ee_v, ee_w)
     return vw_ee
 
+
+# class Dist_Listener(object):
+#     def __init__(self):
+#         # Params
+#         self.dist_vector = Vector3()
+#         self.dist_vector.x = 1
+#         self.dist_vector.y = 1
+#         self.dist_vector.z = 1
+#         # Subscribers
+#         rospy.Subscriber("/kinect_merge/vector_closest_frame",Vector3,self.callback)
+#         print self.dist_vector
+
+#     def callback(self, vector):
+#         self.dist_vector = vector
+#         print vector
+
+def callback(vector, args):
+    J_I_ee = args[0]
+    joint_velocity = args[1]
+    pub = args[2]
+    vector_list = [vector.x, vector.y, vector.z]
+    print vector_list
+    vw_ee_o = calculateVelocity(vector_list, 1)
+    vw_ee = vw_ee_o
+    print vw_ee
+    j_v_ee = np.asarray(np.dot(J_I_ee, vw_ee))[0]
+    joint_velocity.data = j_v_ee.tolist()
+    pub.publish(joint_velocity)
 
 if __name__ == '__main__':
     rospy.init_node('dynamic_obstacle_avoidance')
@@ -88,32 +106,25 @@ if __name__ == '__main__':
 
     try:
         listener = tf.TransformListener()
-        rate = rospy.Rate(125)
+        rate = rospy.Rate(5)
                 
         while not rospy.is_shutdown():
             current_joint_pos = rob.getj()
             joint_send.setJointPos(current_joint_pos)
-            pub.publish(joint_velocity)
             
             # ee Jacobian
             J_ee = kdl_ee.jacobian(current_joint_pos)
             J_I_ee = np.linalg.pinv(J_ee)
-            # ee obstacle repulsion force
-            try:
-                (trans_ee_o, rot_ee_o) = listener.lookupTransform('/ar_marker_8', '/ee_link', rospy.Time(0))
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                continue
-            vw_ee_o = calculateVelocity(trans_ee_o, 1)
-            # # ee target attraction force
-            # try:
-            #     (trans_ee_t, rot_ee_t) = listener.lookupTransform('/link_6', '/obstacle', rospy.Time(0))
-            # except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            #     continue
-            # vw_ee_t = calculateVelocity(trans_ee_t, 0)
-            # vw_ee = vw_ee_o + vw_ee_t
-            vw_ee = vw_ee_o
-            j_v_ee = np.asarray(np.dot(J_I_ee, vw_ee))[0]
-            joint_velocity.data = j_v_ee.tolist()
+
+            # dise_listener = Dist_Listener()
+            # vector_list = [dise_listener.dist_vector.x, dise_listener.dist_vector.y, dise_listener.dist_vector.z]
+            rospy.Subscriber("/kinect_merge/vector_closest_frame", Vector3, callback, (J_I_ee, joint_velocity, pub))
+
+            # vw_ee_o = calculateVelocity(vector_list, 1)
+            # vw_ee = vw_ee_o
+            # j_v_ee = np.asarray(np.dot(J_I_ee, vw_ee))[0]
+            # joint_velocity.data = j_v_ee.tolist()
+            # pub.publish(joint_velocity)
 
             rate.sleep()
     except rospy.ROSInterruptException:

@@ -1,7 +1,7 @@
 <launch>
 
   <arg name="kinect_name" default="kinect2" />  
-  <arg name="voxel_size" default="0.11" />  
+  <arg name="voxel_size" default="0.15" />  
 
   <!-- Nodelet manager for this pipeline --> 
   <node pkg="nodelet" type="nodelet" args="manager"

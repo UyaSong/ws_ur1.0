@@ -21,9 +21,9 @@ Marker makeBox( InteractiveMarker &msg )
   Marker marker;
 
   marker.type = Marker::CUBE;
-  marker.scale.x = msg.scale * 0.5;
-  marker.scale.y = msg.scale * 0.5;
-  marker.scale.z = msg.scale * 0.5;
+  marker.scale.x = msg.scale * 0.05;
+  marker.scale.y = msg.scale * 0.05;
+  marker.scale.z = msg.scale * 0.05;
   marker.color.r = 0.5;
   marker.color.g = 0.5;
   marker.color.b = 0.5;
