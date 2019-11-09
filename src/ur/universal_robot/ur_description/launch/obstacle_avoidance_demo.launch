@@ -16,8 +16,8 @@
     <arg name="config" value="true" />
   </include>
 
-  <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster" args="0.83276260552 1.06075976427 0.80056920103 -0.0766471342905 -0.774785158296 0.624693141955 0.0599304070059 base_link kinect2_rgb_optical_frame 100" />
-  <!-- <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster" args="0.88776260552 1.05275976427 0.82056920103 -0.0766471342905 -0.774785158296 0.624693141955 0.0599304070059 base_link kinect2_ir_optical_frame 100" /> -->
+  <!--<node pkg="tf" type="static_transform_publisher" name="camera_broadcaster" args="0.83276260552 1.06075976427 0.80056920103 -0.0766471342905 -0.774785158296 0.624693141955 0.0599304070059 base_link kinect2_rgb_optical_frame 100" />-->
+  <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster" args="0.882477719022 1.14775159614 0.750788355671 -0.24392208819 -0.744118769819 0.586891689597 0.205784877914 base_link kinect2_ir_optical_frame 100" />
 
   <!--kinect2_ir_optical_frame/-->
 

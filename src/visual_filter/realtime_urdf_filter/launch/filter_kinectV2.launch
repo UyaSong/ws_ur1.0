@@ -3,10 +3,10 @@
   <arg name="kinect_name" default="kinect2" />
 
   <node pkg="realtime_urdf_filter" type="realtime_urdf_filter" name="$(arg kinect_name)_realtime_urdf_filter" output="screen">
-    <remap from="~input_depth" to="/$(arg kinect_name)/qhd/image_depth_rect"/>
-    <remap from="~output_depth" to="/$(arg kinect_name)/qhd/image_depth_rect_filtered" />
+    <remap from="~input_depth" to="/$(arg kinect_name)/sd/image_depth_rect"/>
+    <remap from="~output_depth" to="/$(arg kinect_name)/sd/image_depth_rect_filtered" />
     <remap from="~output_mask" to="/$(arg kinect_name)/urdf_filtered_mask" />
-    <param name="camera_frame" value="/$(arg kinect_name)_rgb_optical_frame" />
+    <param name="camera_frame" value="/$(arg kinect_name)_ir_optical_frame" />
 
     <!-- WARNING: This file contains a hack for the KinectV2 -->
     <rosparam command="load" file="$(find realtime_urdf_filter)/launch/filter_kinectV2_parameters.yaml"/>

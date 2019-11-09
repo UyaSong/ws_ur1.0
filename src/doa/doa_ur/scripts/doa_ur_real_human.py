@@ -104,6 +104,12 @@ if __name__ == '__main__':
 
     joint_send = Joint()
 
+
+    current_joint_pos = rob.getj()
+    J_ee = kdl_ee.jacobian(current_joint_pos)
+    J_I_ee = np.linalg.pinv(J_ee)
+    rospy.Subscriber("/kinect_merge/vector_closest_frame", Vector3, callback, (J_I_ee, joint_velocity, pub))
+
     try:
         listener = tf.TransformListener()
         rate = rospy.Rate(5)
@@ -118,7 +124,7 @@ if __name__ == '__main__':
 
             # dise_listener = Dist_Listener()
             # vector_list = [dise_listener.dist_vector.x, dise_listener.dist_vector.y, dise_listener.dist_vector.z]
-            rospy.Subscriber("/kinect_merge/vector_closest_frame", Vector3, callback, (J_I_ee, joint_velocity, pub))
+            
 
             # vw_ee_o = calculateVelocity(vector_list, 1)
             # vw_ee = vw_ee_o

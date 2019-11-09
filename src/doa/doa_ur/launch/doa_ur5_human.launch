@@ -32,10 +32,9 @@
   </node-->
 
   <!-- static obstacle frame -->
-  <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster_rgb" args="0.83276260552 1.06075976427 0.80056920103 -0.0766471342905 -0.774785158296 0.624693141955 0.0599304070059 base_link kinect2_rgb_optical_frame 100" />
-  <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster_ir" args="0.88776260552 1.05275976427 0.82056920103 -0.0766471342905 -0.774785158296 0.624693141955 0.0599304070059 base_link kinect2_ir_optical_frame 100" />
+  <!--<node pkg="tf" type="static_transform_publisher" name="camera_broadcaster_rgb" args="0.83276260552 1.06075976427 0.80056920103 -0.0766471342905 -0.774785158296 0.624693141955 0.0599304070059 base_link kinect2_rgb_optical_frame 100" />-->
+  <node pkg="tf" type="static_transform_publisher" name="camera_broadcaster_ir" args="0.822477719022 1.20775159614 0.736788355671 -0.24392208819 -0.744118769819 0.586891689597 0.205784877914 base_link kinect2_ir_optical_frame 100" />
   <!-- Run Rviz and load the default config to see the state of the move_group node -->
-  <!-- node name="rviz" pkg="rviz" type="rviz"  /-->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find doa_ur)/config/interactive_tf.rviz"/>
   <!-- node name="doa_sim" pkg="doa_ur" type="doa_sim.py"  /-->
 

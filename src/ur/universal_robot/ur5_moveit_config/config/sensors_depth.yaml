@@ -1,7 +1,7 @@
 # The name of this file shouldn't be changed, or else the Setup Assistant won't detect it
 sensors:
   - sensor_plugin: occupancy_map_monitor/DepthImageOctomapUpdater
-    image_topic: /kinect2/sd/image_depth_rect_filtered/DepthCloud
+    image_topic: /kinect2/sd/image_depth/points
     queue_size: 5
     near_clipping_plane_distance: 0.3
     far_clipping_plane_distance: 5.0
