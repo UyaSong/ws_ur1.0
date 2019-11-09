@@ -4,7 +4,7 @@
   <version>0.0.1</version>
   <description>Manipulate a tf with an interactive marker</description>
 
-  <maintainer email="sunyuansong@megvii.com">Sun Yuansong</maintainer>
+  <maintainer email="sunyuansong2017@ia.ac.cn">Sun Yuansong</maintainer>
   <license>BSD</license>
   <url type="website">http://github.com/lucasw/rviz_interactive_tf</url>
 
